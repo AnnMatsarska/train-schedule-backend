@@ -4,7 +4,6 @@ const TEXT = {
     USER_EXIST: "User already exists",
     INVALID_PASSWORD: "Password must be at least 6 characters long",
     REGISTER_FAILED: "Registration failed",
-    INVALID_CREDENTIALS: "Invalid credentials",
     LOGIN_FAILED: "Login failed",
     UNAUTHORIZED: "Unauthorized",
     USER_NOT_FOUND: "User not found",

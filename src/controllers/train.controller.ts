@@ -126,6 +126,16 @@ export const updateTrain = async (
       res.status(404).json({ error: TEXT.ERROR.TRAIN_NOT_FOUND });
       return;
     }
+
+    const existing = await trainRepository.findOne({
+      where: { trainNumber: dto.trainNumber },
+    });
+
+    if (existing && existing.id !== req.params.id) {
+      res.status(409).json({ error: TEXT.ERROR.TRAIN_EXIST });
+      return;
+    }
+
     const duration = calculateDurationInSeconds(
       dto.departure.date,
       dto.departure.time,
@@ -191,6 +201,17 @@ export const updateTrainPartially = async (
         mergedArrival.date,
         mergedArrival.time
       );
+    }
+
+    if (dto.trainNumber) {
+      const existing = await trainRepository.findOne({
+        where: { trainNumber: dto.trainNumber },
+      });
+
+      if (existing && existing.id !== req.params.id) {
+        res.status(409).json({ error: TEXT.ERROR.TRAIN_EXIST });
+        return;
+      }
     }
 
     const { departure, arrival, ...otherFields } = dto;

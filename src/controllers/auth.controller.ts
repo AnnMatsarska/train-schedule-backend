@@ -73,13 +73,13 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     const user = await userRepository.findOne({ where: { email } });
     if (!user) {
-      res.status(401).json({ error: TEXT.ERROR.INVALID_CREDENTIALS });
+      res.status(401).json({ error: TEXT.ERROR.LOGIN_FAILED });
       return;
     }
 
     const isPasswordValid = await user.validatePassword(password);
     if (!isPasswordValid) {
-      res.status(401).json({ error: TEXT.ERROR.INVALID_CREDENTIALS });
+      res.status(401).json({ error: TEXT.ERROR.LOGIN_FAILED });
       return;
     }
 
