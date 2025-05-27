@@ -66,17 +66,27 @@ export const getAllTrains = async (
       ? req.query.sortBy
       : "createdAt";
     const sortOrder = req.query.order === "asc" ? "ASC" : "DESC";
+    const all = req.query.all === "true";
 
-    const trains = await trainRepository.find({
-      order: { [sortField as string]: sortOrder },
-    });
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 5;
+
+    const [trains, total] = all
+      ? await trainRepository.findAndCount({
+          order: { [sortField as string]: sortOrder },
+        })
+      : await trainRepository.findAndCount({
+          order: { [sortField as string]: sortOrder },
+          skip: (page - 1) * limit,
+          take: limit,
+        });
 
     const result = trains.map((train) => ({
       ...train,
       durationFormatted: formatDuration(train.duration),
     }));
 
-    res.json(result);
+    res.json({ trains: result, total, page, limit });
   } catch (e) {
     res.status(500).json({ error: TEXT.ERROR.TRAIN_GET_FAIL });
   }
